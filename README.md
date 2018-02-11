@@ -1,19 +1,30 @@
 # Boost Spirit Parser for BBCODE
 
+## Types of BBCode Elements
+
+### Simple
+
+`[B]This is bold text[/B]` 
+
+```
+tag-open = '['
+tag-close = ']'
+
 ## BNF
 
 ```
 document = element | document element
-element = tag | content
+element = quote-tag | simple-tag | content
 
-open-tag = 
+tag = quote-tag
 
-tag_name = tag-start 
+tag-open = tag-start tag-name tag-end
 tag-start = "["
 tag-end = "]"
+tag-name = characters - whitespace 
 
 
-whitespace = ? whitespace characters ?
+whitespace = ? whitespace characters ?s
 characters = ? unicode characters ?
 
  <document> ::= <element> | <document> <element>
