@@ -14,14 +14,19 @@ This library requires the Boost C++ libraries.
 
 ### Value Elements
 
-1. `[COLOR="green"]` ; with quotes
-1. `[COLOR=green]`   ; without quotes
+1. `[COLOR="green"]`
+    * with quotes
+1. `[COLOR=green]`
+    * without quotes
 
 ### `QUOTE` Element
 
-1. `[QUOTE user=Username postid=1234]` ; a key-value pair of values. In theory they are space delimited unless quoted (used with phpBB)
-1. `[QUOTE="username, post: 1799684, member: 11733"]` ; another key-value pair format except the first argument is assumed to be the username (used with XenForo)   
-1. `[QUOTE=Username;1234]` ; `Username` is the name of the user being quoted and `1234` is the postid (used with vBulletin)
+1. `[QUOTE user=Username postid=1234]` 
+    * a key-value pair of values. In theory they are space delimited unless quoted (used with phpBB)
+1. `[QUOTE="username, post: 1799684, member: 11733"]`
+    * another key-value pair format except the first argument is assumed to be the username (used with XenForo)   
+1. `[QUOTE=Username;1234]` 
+    * `Username` is the name of the user being quoted and `1234` is the postid (used with vBulletin)
 
 ## BNF
 

@@ -22,42 +22,74 @@ BOOST_FUSION_ADAPT_STRUCT
     (std::string, name)
 );
 
-struct QuoteNode
+struct ValueElement
 {
-    using Attributes = std::multimap<std::string, std::string>;
-
-    std::string     _author;
-    std::string     _postid;
-    Attributes      _attributes;
+    std::string name;
+    std::string value;
+    char quoteChar;
 };
 
 BOOST_FUSION_ADAPT_STRUCT
 (
-    QuoteNode,
-    (std::string, _author)
-    (std::string, _postid)
+    ValueElement,
+    (std::string, name)
+    (std::string, value)
+    (char, quoteChar)
 );
 
 template<typename Iterator>
-struct QuoteParser
-    : boost::spirit::qi::grammar<Iterator, QuoteNode()>
+struct BBCodeParser
 {
-    QuoteParser()
-        : QuoteParser::base_type(query)
-    {
-        namespace bsq = boost::spirit::qi;
 
-        vbquote = bsq::lit("[QUOTE=") >> +(bsq::char_ - ';') >> ';' >> +(bsq::char_ - ']') >> ']';
-        xfquote = bsq::lit(R"([QUOTE=")") >> +(bsq::char_ - ',') >> ',' >> +(bsq::char_ - bsq::lit(R"("])")) >> bsq::lit(R"("])");
-
-        query = xfquote | vbquote;
-    }
-
-    boost::spirit::qi::rule<Iterator, QuoteNode()> vbquote;
-    boost::spirit::qi::rule<Iterator, QuoteNode()> xfquote;
-
-    boost::spirit::qi::rule<Iterator, QuoteNode()> query;
 };
+
+//    struct mini_xml;
+
+// using mini_xml_node = boost::variant<boost::recursive_wrapper<mini_xml>, std::string>;
+
+// struct mini_xml
+// {
+//     std::string name;                           // tag name
+//     std::vector<mini_xml_node> children;        // children
+// };
+
+
+// struct QuoteNode
+// {
+//     using Attributes = std::multimap<std::string, std::string>;
+
+//     std::string     _author;
+//     std::string     _postid;
+//     Attributes      _attributes;
+// };
+
+// BOOST_FUSION_ADAPT_STRUCT
+// (
+//     QuoteNode,
+//     (std::string, _author)
+//     (std::string, _postid)
+// );
+
+// template<typename Iterator>
+// struct QuoteParser
+//     : boost::spirit::qi::grammar<Iterator, QuoteNode()>
+// {
+//     QuoteParser()
+//         : QuoteParser::base_type(query)
+//     {
+//         namespace bsq = boost::spirit::qi;
+
+//         vbquote = bsq::lit("[QUOTE=") >> +(bsq::char_ - ';') >> ';' >> +(bsq::char_ - ']') >> ']';
+//         xfquote = bsq::lit(R"([QUOTE=")") >> +(bsq::char_ - ',') >> ',' >> +(bsq::char_ - bsq::lit(R"("])")) >> bsq::lit(R"("])");
+
+//         query = xfquote | vbquote;
+//     }
+
+//     boost::spirit::qi::rule<Iterator, QuoteNode()> vbquote;
+//     boost::spirit::qi::rule<Iterator, QuoteNode()> xfquote;
+
+//     boost::spirit::qi::rule<Iterator, QuoteNode()> query;
+// };
 
 int main()
 {
