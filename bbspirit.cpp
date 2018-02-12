@@ -25,6 +25,14 @@ struct SimpleElement
     std::string content;  
 };
 
+struct ValueElement
+{
+    std::string name;
+    std::string value;
+    std::string content;
+    char quoteChar;
+};
+
 } // bbcpp namespace
 
 BOOST_FUSION_ADAPT_STRUCT
@@ -34,22 +42,17 @@ BOOST_FUSION_ADAPT_STRUCT
     (std::string, content)
 );
 
+BOOST_FUSION_ADAPT_STRUCT
+(
+    bbcpp::ValueElement,
+    (std::string, name)
+    (std::string, value)
+    (std::string, content)
+    (char, quoteChar)
+);
+
 namespace bbcpp
 {
-// struct ValueElement
-// {
-//     std::string name;
-//     std::string value;
-//     char quoteChar;
-// };
-
-// BOOST_FUSION_ADAPT_STRUCT
-// (
-//     ValueElement,
-//     (std::string, name)
-//     (std::string, value)
-//     (char, quoteChar)
-// );
 
 template<typename Iterator>
 struct SimpleElementParser
