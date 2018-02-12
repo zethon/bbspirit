@@ -1,14 +1,27 @@
-# Boost Spirit Parser for BBCODE
+# bbcpp
 
-## Types of BBCode Elements
+## Introduction
 
-### Simple
+bbcpp is a C++ library for parsing BBCode, or Bulletin Board Code, a markup language used to format posts in many message boards.
 
-`[B]This is bold text[/B]` 
+This library requires the Boost C++ libraries.
 
-```
-tag-open = '['
-tag-close = ']'
+## Supported BBCode Element Typs
+
+### Simple Elements
+
+1. `[B]This is bold text[/B]`
+
+### Value Elements
+
+1. `[COLOR="green"]` ; with quotes
+1. `[COLOR=green]`   ; without quotes
+
+### `QUOTE` Element
+
+1. `[QUOTE user=Username postid=1234]` ; a key-value pair of values. In theory they are space delimited unless quoted (used with phpBB)
+1. `[QUOTE="username, post: 1799684, member: 11733"]` ; another key-value pair format except the first argument is assumed to be the username (used with XenForo)   
+1. `[QUOTE=Username;1234]` ; `Username` is the name of the user being quoted and `1234` is the postid (used with vBulletin)
 
 ## BNF
 

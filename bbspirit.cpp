@@ -9,10 +9,18 @@
 #include <boost/fusion/adapted/std_tuple.hpp> 
 #include <boost/spirit/include/qi_raw.hpp>
 
+#include <boost/variant/recursive_variant.hpp>
 
-// [QUOTE=Max Power;12345]
-// [QUOTE uid=26297 name="TheRover" post=1120490]  
-// [QUOTE="Max Power, post: 12345, member: 1"]     
+struct SimpleElement
+{
+    std::string name;
+};
+
+BOOST_FUSION_ADAPT_STRUCT
+(
+    SimpleElement,
+    (std::string, name)
+);
 
 struct QuoteNode
 {
