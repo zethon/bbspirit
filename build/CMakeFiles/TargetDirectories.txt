@@ -1,3 +1,0 @@
-/Users/adalidclaure/src/bbspirit/build/CMakeFiles/rebuild_cache.dir
-/Users/adalidclaure/src/bbspirit/build/CMakeFiles/edit_cache.dir
-/Users/adalidclaure/src/bbspirit/build/CMakeFiles/bbspirit.dir
