@@ -78,11 +78,21 @@ struct SimpleElementParser
             >> lexeme[+(char_ - ']')]
             >> ']';
 
-        element %= start_tag[at_c<0>(_val) = _1]
-            >> lexeme[+(char_ - '[')]
+        text = lexeme[+(char_ -(lit("[/") >> string(_r1) >> lit("]")))];
+        // text = end_tag(_r1);
+
+        element 
+            %= start_tag[at_c<0>(_val) = _1]
+
+            // accept everything except the expected closing tag
+            //>> lexeme[+(char_ -(lit("[/") >> string(at_c<0>(_val)) >> lit("]")))]
+            >> text(at_c<0>(_val)) // lexeme[+(char_ -(lit("[/") >> string(at_c<0>(_val)) >> lit("]")))]
+
             >> end_tag(at_c<0>(_val));
     }
 
+
+    qi::rule<Iterator, std::string(std::string)> text;
     qi::rule<Iterator, std::string()> start_tag;
     qi::rule<Iterator, void(std::string)> end_tag;
 
@@ -97,7 +107,7 @@ int main()
 
     using range_t = std::string::const_iterator;
 
-    const std::string test1 = "[B]This is bold![/B]";
+    const std::string test1 = "[B]This [I]is[/I] bold![/B]";
 
     const SimpleElementParser<range_t> parser;
     SimpleElement element;
