@@ -56,7 +56,7 @@ namespace bbcpp
 
 template<typename Iterator>
 struct SimpleElementParser
-    : qi::grammar<Iterator, SimpleElement()>
+    : qi::grammar<Iterator, SimpleElement()> 
 {
     SimpleElementParser()
         : SimpleElementParser::base_type(element)
