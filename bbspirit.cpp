@@ -14,24 +14,29 @@
 
 namespace bbcpp
 {
-    namespace fusion = boost::fusion;
-    namespace phoenix = boost::phoenix;
-    namespace qi = boost::spirit::qi;
-    namespace ascii = boost::spirit::ascii;
+
+namespace fusion = boost::fusion;
+namespace phoenix = boost::phoenix;
+namespace qi = boost::spirit::qi;
+namespace ascii = boost::spirit::ascii;
+
+using ElementWrapper = boost::recursive_wrapper<SimpleElement>;
+using NodeVariant = boost::variant<ElementWrapper, std::string>;
 
 struct SimpleElement
 {
     std::string name;
-    std::string content;  
+    // std::string content;
+    std::vector<ElementWrapper> children;
 };
 
-struct ValueElement
-{
-    std::string name;
-    std::string value;
-    std::string content;
-    char quoteChar;
-};
+// struct ValueElement
+// {
+//     std::string name;
+//     std::string value;
+//     std::string content;
+//     char quoteChar;
+// };
 
 } // bbcpp namespace
 
@@ -42,14 +47,14 @@ BOOST_FUSION_ADAPT_STRUCT
     (std::string, content)
 );
 
-BOOST_FUSION_ADAPT_STRUCT
-(
-    bbcpp::ValueElement,
-    (std::string, name)
-    (std::string, value)
-    (std::string, content)
-    (char, quoteChar)
-);
+// BOOST_FUSION_ADAPT_STRUCT
+// (
+//     bbcpp::ValueElement,
+//     (std::string, name)
+//     (std::string, value)
+//     (std::string, content)
+//     (char, quoteChar)
+// );
 
 namespace bbcpp
 {

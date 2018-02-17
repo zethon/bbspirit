@@ -6,6 +6,8 @@ bbcpp is a C++ library for parsing BBCode, or Bulletin Board Code, a markup lang
 
 This library requires the Boost C++ libraries.
 
+**NOTE**: Currently this project is being worked on in a seperate repo. Once it is past initial develoment, I will replace the `bbcpp` project's code with this.
+
 ## Supported BBCode Element Typs
 
 ### Simple Elements
