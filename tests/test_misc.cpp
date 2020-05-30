@@ -1,5 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
+#include "../include/bbspirit/bbspirit.hpp"
+
 using namespace std::string_literals;
 
 BOOST_AUTO_TEST_SUITE(misc)

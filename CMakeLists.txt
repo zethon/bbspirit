@@ -14,10 +14,6 @@ option(BBSPIRIT_TEST "Build unit tests (default OFF)" OFF)
 find_package(Boost)
 include_directories(${Boost_INCLUDE_DIRS})
 
-set (HEADER_FILES
-    include/bbspirit/bbspirit.h
-)
-
 if (BBSPIRIT_TEST)
     enable_testing()
     add_subdirectory(tests)
