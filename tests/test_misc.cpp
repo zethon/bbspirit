@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
 
-#include "../include/bbspirit/bbspirit.hpp"
+#include "../include/bbspirit.hpp"
 
 using namespace std::string_literals;
 
