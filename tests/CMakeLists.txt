@@ -4,8 +4,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(BBSPIRIT_FILES
-    ../include/bbspirit/BBDocument.h
-    ../include/bbspirit/bbspirit.hpp
+    ../include/BBDocument.h
+    ../include/bbspirit.hpp
 )
 
 set(MISC_FILES
