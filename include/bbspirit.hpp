@@ -13,19 +13,19 @@ namespace bbspirit
 
 struct SimpleElement
 {
-    int age;
-    std::string forename;
-    std::string surname;
-    double salary;
+//    int age;
+    std::string tag;
+    std::string content;
+//    double salary;
 
 //    std::string name;
 //    std::string content;
 
-//    friend std::ostream& operator<<(std::ostream& os, const SimpleElement& el)
-//    {
-//        os << '[' << el.name << ']' << el.content << "[/" << el.name << ']';
-//        return os;
-//    }
+    friend std::ostream& operator<<(std::ostream& os, const SimpleElement& el)
+    {
+        os << '[' << el.tag << ']' << el.content << "[/" << el.tag << ']';
+        return os;
+    }
 };
 
 } // namespace bbspirit
@@ -35,8 +35,10 @@ struct SimpleElement
 //    bbspirit::SimpleElement, name, content
 //)
 
-BOOST_FUSION_ADAPT_STRUCT(bbspirit::SimpleElement,
-    age, forename, surname, salary
+BOOST_FUSION_ADAPT_STRUCT
+(
+    bbspirit::SimpleElement,
+        /*age,*/ tag, content/*, salary*/
 )
 
 namespace bbspirit
@@ -59,10 +61,10 @@ namespace bbspirit
     auto const employee_def =
         lit("employee")
         >> '{'
-        >>  int_ >> ','
+//        >>  int_ >> ','
         >>  quoted_string >> ','
         >>  quoted_string >> ','
-        >>  double_
+//        >>  double_
         >>  '}'
         ;
 
