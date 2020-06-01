@@ -91,7 +91,7 @@ namespace bbspirit
         std::cout << "b: " << x3::_attr(ctx) << '\n';
         std::cout << "hi";
 
-//        x3::_pass(ctx) = (element.tag == x3::_attr(ctx));
+        x3::_pass(ctx) = (element.tag == x3::_attr(ctx));
 
 //        if (x3::_val(ctx).tag = x3::_attr(ctx))
 //        {
@@ -102,13 +102,18 @@ namespace bbspirit
 //                == x3::_val(ctx).tag;
     };
 
+    auto assignContent = [](auto& ctx)
+    {
+        x3::_val(ctx).content = x3::_attr(ctx);
+    };
+
     auto const employee_def
         = '['
-        >> +(char_ - ']')[assignTag]
+        >> x3::lexeme[+(char_ - ']')][assignTag]
         >> ']'
-        >> +(char_ - x3::lit("[/"))[db]
-        >> x3::lit("[/")
-        >> +(char_ - ']')[testTag]
+        >> x3::lexeme[+(char_ - x3::lit("[/"))][assignContent]
+        >> "[/"
+        >> x3::lexeme[+(char_ - ']')][testTag]
         >> ']'
         ;
 

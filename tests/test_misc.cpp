@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(simpleTag)
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
-    BOOST_REQUIRE_EQUAL(element.tag, "b");
+    BOOST_REQUIRE_EQUAL(element.tag, "be");
     BOOST_REQUIRE_EQUAL(element.content, "Hello World");
 }
 
