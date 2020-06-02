@@ -20,7 +20,7 @@ const std::tuple<std::string, std::string, std::string> simpleTagData[] =
 };
 
 // --run_test=bbspirit/simpleTag
-BOOST_DATA_TEST_CASE(simpleTag, data::make(simpleTagData), original, tag, text)
+BOOST_DATA_TEST_CASE(simpleTagTest, data::make(simpleTagData), original, tag, text)
 {
     std::string::const_iterator start = std::begin(original);
     const std::string::const_iterator stop = std::end(original);
@@ -28,7 +28,7 @@ BOOST_DATA_TEST_CASE(simpleTag, data::make(simpleTagData), original, tag, text)
     bbspirit::SimpleElement element{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::employee, x3::ascii::space, element);
+        phrase_parse(start, stop, bbspirit::simpleTag, x3::ascii::space, element);
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
