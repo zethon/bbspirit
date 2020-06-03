@@ -31,36 +31,29 @@ using x3::lit;
 using x3::lexeme;
 using ascii::char_;
 
-const x3::rule<class SimpleElementID, SimpleElement> simpleTag = "simpleTag";
+struct TagName{};
+auto openTag
+    = x3::rule<struct openTagID, std::string, true> { "openTag" }
+    = ('[' >> x3::lexeme[+(char_ - ']')] >> ']')
+        [([](auto& ctx) { x3::get<TagName>(ctx) = _attr(ctx); })];
 
-auto assignTag = [](auto& ctx)
-{
-    x3::_val(ctx).tag = x3::_attr(ctx);
-};
+auto closeTag
+    = x3::rule<struct closeTagID, std::string, true> {"closeTag"}
+    = ("[/" >> x3::lexeme[+(char_ - ']')] >> ']')
+        [([](auto& ctx) { _pass(ctx) = (x3::get<TagName>(ctx) == _attr(ctx)); })];
 
-auto testTag = [](auto& ctx)
-{
-    x3::_pass(ctx) = 
-        (x3::_val(ctx).tag == x3::_attr(ctx));
-};
+auto tagContents
+    = x3::rule<struct openTagID, std::string> {"tagContents"}
+    = x3::lexeme[ +(char_ - closeTag) ];
 
-auto assignContent = [](auto& ctx)
-{
-    x3::_val(ctx).content = x3::_attr(ctx);
-};
 
-auto const simpleTag_def
-    = '['
-    >> x3::lexeme[+(char_ - ']')][assignTag]
-    >> ']'
-    >> x3::lexeme[
-        +(char_ - x3::lit("[/"))]
-            [assignContent]
-    >> "[/"
-    >> x3::lexeme[+(char_ - ']')][testTag]
-    >> ']'
-    ;
-
-BOOST_SPIRIT_DEFINE(simpleTag);
+auto const simpleTag
+    = x3::rule<class SimpleElementID, SimpleElement, true> {"simpleTag"}
+    = x3::with<TagName>(std::string())
+    [
+        openTag
+        >> tagContents
+        >> x3::omit [ closeTag ]
+    ];
 
 } // namespace bbspirit

@@ -16,10 +16,10 @@ const std::tuple<std::string, std::string, std::string> simpleTagData[] =
     std::make_tuple("[i]Hello World[/i]", "i", "Hello World"),
     std::make_tuple("[url]Hello World[/url]", "url", "Hello World"),
     std::make_tuple("[url]Hello Wo[rld[/url]", "url", "Hello Wo[rld"),
-    std::make_tuple("[url]Hello Wo[/rld[/url]", "url", "Hello Wo[rld"),
+    std::make_tuple("[url]Hello Wo[/rld[/url]", "url", "Hello Wo[/rld"),
 };
 
-// --run_test=bbspirit/simpleTag
+// --run_test=bbspirit/simpleTagTest
 BOOST_DATA_TEST_CASE(simpleTagTest, data::make(simpleTagData), original, tag, text)
 {
     std::string::const_iterator start = std::begin(original);
