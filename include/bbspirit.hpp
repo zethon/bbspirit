@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/spirit/home/x3.hpp>
+#include <boost/spirit/home/x3/support/ast/variant.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
 namespace x3 = boost::spirit::x3;
@@ -44,15 +45,28 @@ BOOST_FUSION_ADAPT_STRUCT
 namespace bbspirit
 {
 
-auto openTag2
-    = x3::rule<struct openTagID2, std::string, true> { "openTag2" }
-    = ('[' >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+namespace x3 = boost::spirit::x3;
+namespace ascii = boost::spirit::x3::ascii;
+
+struct Element : x3::variant<OpenTag, CloseTag, std::string>
+{
+    using base_type::base_type;
+    using base_type::operator=;
+};
 
 auto closeTag2
-    = x3::rule<struct closeTagID2, std::string, true> {"closeTag2"}
+    = x3::rule<struct closeTagID2, CloseTag, true> {"closeTag2"}
     = ("[/" >> x3::lexeme[+(x3::char_ - ']')] >> ']');
 
-} // namespace
+auto openTag2
+    = x3::rule<struct openTagID2, OpenTag, true> { "openTag2" }
+    = ('[' >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+
+const auto contentParser
+    = x3::rule<class ContentParserID, Element, true> {"contentParser"}
+    = closeTag2 | openTag2 | x3::lexeme[+(x3::char_)];
+
+} // namespace bbspirit
 
 namespace bbspirit
 {
@@ -78,7 +92,6 @@ auto closeTag
 auto tagContents
     = x3::rule<struct openTagID, std::string> {"tagContents"}
     = x3::lexeme[ +(char_ - closeTag) ];
-
 
 auto const simpleTag
     = x3::rule<class SimpleElementID, SimpleElement, true> {"simpleTag"}

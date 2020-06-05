@@ -80,4 +80,50 @@ BOOST_DATA_TEST_CASE(closeTagTest, data::make(closeTagData), original, expected)
     BOOST_REQUIRE_EQUAL(closeTag.id, expected);
 }
 
+struct tag_visitor
+    : public boost::static_visitor<std::string>
+{
+    std::string operator()(const std::string& value) const
+    {
+        return value;
+    }
+
+    std::string operator()(const bbspirit::OpenTag& value) const
+    {
+        return value.id;
+    }
+
+    std::string operator()(const bbspirit::CloseTag& value) const
+    {
+        return value.id;
+    }
+};
+
+// 0 - tag
+// 1 - which type (0 - OpenTag, 1 - CloseTag, 2 - string)
+const std::tuple<std::string, std::uint32_t, std::string> contentData[] =
+{
+    std::make_tuple("[cat]", 0, "cat"),
+    std::make_tuple("[/b]", 1, "b"),
+    std::make_tuple("cat", 2, "cat"),
+};
+
+// --run_test=bbspirit/contentParserTest
+BOOST_DATA_TEST_CASE(contentParserTest, data::make(contentData), original, whichType, innerString)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::Element element{};
+
+    bool result =
+        phrase_parse(start, stop, bbspirit::contentParser, x3::ascii::space, element);
+
+    BOOST_REQUIRE(result);
+    BOOST_REQUIRE(start == stop);
+    BOOST_REQUIRE_EQUAL(element.get().which(), whichType);
+    const auto temp = boost::apply_visitor(tag_visitor(), element.get()); 
+    BOOST_REQUIRE_EQUAL(temp, innerString);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // arccutils
