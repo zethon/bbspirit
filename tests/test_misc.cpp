@@ -36,4 +36,48 @@ BOOST_DATA_TEST_CASE(simpleTagTest, data::make(simpleTagData), original, tag, te
     BOOST_REQUIRE_EQUAL(element.content, text);
 }
 
+const std::tuple<std::string, std::string> openTagData[] =
+{
+    std::make_tuple("[b]", "b"),
+    std::make_tuple("[cat]", "cat"),
+};
+
+// --run_test=bbspirit/openTagTest
+BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::OpenTag openTag{};
+
+    bool result =
+        phrase_parse(start, stop, bbspirit::openTag2, x3::ascii::space, openTag);
+
+    BOOST_REQUIRE(result);
+    BOOST_REQUIRE(start == stop);
+    BOOST_REQUIRE_EQUAL(openTag.id, expected);
+}
+
+const std::tuple<std::string, std::string> closeTagData[] =
+{
+    std::make_tuple("[/b]", "b"),
+    std::make_tuple("[/cat]", "cat"),
+};
+
+// --run_test=bbspirit/closeTagTest
+BOOST_DATA_TEST_CASE(closeTagTest, data::make(closeTagData), original, expected)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::CloseTag closeTag{};
+
+    bool result =
+        phrase_parse(start, stop, bbspirit::closeTag2, x3::ascii::space, closeTag);
+
+    BOOST_REQUIRE(result);
+    BOOST_REQUIRE(start == stop);
+    BOOST_REQUIRE_EQUAL(closeTag.id, expected);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // arccutils

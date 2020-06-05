@@ -14,12 +14,45 @@ struct SimpleElement
     std::string content;
 };
 
+struct OpenTag
+{
+    std::string id;
+};
+
+struct CloseTag
+{
+    std::string id;
+};
+
 } // namespace bbspirit
 
 BOOST_FUSION_ADAPT_STRUCT
 (
     bbspirit::SimpleElement, tag, content
 )
+
+BOOST_FUSION_ADAPT_STRUCT
+(
+    bbspirit::OpenTag, id
+)
+
+BOOST_FUSION_ADAPT_STRUCT
+(
+    bbspirit::CloseTag, id
+)
+
+namespace bbspirit
+{
+
+auto openTag2
+    = x3::rule<struct openTagID2, std::string, true> { "openTag2" }
+    = ('[' >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+
+auto closeTag2
+    = x3::rule<struct closeTagID2, std::string, true> {"closeTag2"}
+    = ("[/" >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+
+} // namespace
 
 namespace bbspirit
 {
