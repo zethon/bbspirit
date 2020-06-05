@@ -55,16 +55,21 @@ struct Element : x3::variant<OpenTag, CloseTag, std::string>
 };
 
 auto closeTag2
-    = x3::rule<struct closeTagID2, CloseTag, true> {"closeTag2"}
-    = ("[/" >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+    = x3::rule<struct closeTagID2, CloseTag, true> { "closeTag2" }
+    = ("[/" >> x3::lexeme[+x3::alnum] >> ']');
 
 auto openTag2
     = x3::rule<struct openTagID2, OpenTag, true> { "openTag2" }
-    = ('[' >> x3::lexeme[+(x3::char_ - ']')] >> ']');
+    = ('[' >> x3::lexeme[+(x3::alnum)] >> ']');
 
 const auto contentParser
-    = x3::rule<class ContentParserID, Element, true> {"contentParser"}
-    = closeTag2 | openTag2 | x3::lexeme[+(x3::char_)];
+    = x3::rule<class ContentParserID, Element, true> { "contentParser" }
+    = closeTag2 | openTag2 | x3::lexeme[+(x3::char_ - (closeTag2 | openTag2))];
+
+using Elements = std::vector<Element>;
+const auto elementsParser
+    = x3::rule<class ContentParserID, Elements, true> { "elementsParser" }
+    = contentParser >> *(contentParser);
 
 } // namespace bbspirit
 

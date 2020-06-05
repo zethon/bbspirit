@@ -126,4 +126,30 @@ BOOST_DATA_TEST_CASE(contentParserTest, data::make(contentData), original, which
     BOOST_REQUIRE_EQUAL(temp, innerString);
 }
 
+const std::tuple<std::string, std::uint32_t> elementsData[] =
+{
+    std::make_tuple("[cat]", 1),
+    std::make_tuple("[/b]", 1),
+    std::make_tuple("cat", 1),
+    std::make_tuple("[b]hello world[/b]", 3),
+    std::make_tuple("foo [b]hello world[/b] bar", 5),
+    std::make_tuple("foo[ [b]hello wo[/rld[/b] bar", 5),
+};
+
+// --run_test=bbspirit/elementsParserTest
+BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, elementCount)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::Elements elements{};
+
+    bool result =
+        phrase_parse(start, stop, bbspirit::elementsParser, x3::ascii::space, elements);
+
+    BOOST_REQUIRE(result);
+    BOOST_REQUIRE(start == stop);
+    BOOST_REQUIRE_EQUAL(elements.size(), elementCount);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // arccutils
