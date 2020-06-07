@@ -1,7 +1,9 @@
 #include <iostream>
+#include <ostream>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
+#include <boost/range/adaptor/indexed.hpp>
 
 #include "../include/bbspirit.hpp"
 
@@ -36,14 +38,15 @@ BOOST_DATA_TEST_CASE(simpleTagTest, data::make(simpleTagData), original, tag, te
     BOOST_REQUIRE_EQUAL(element.content, text);
 }
 
-const std::tuple<std::string, std::string> openTagData[] =
+const std::tuple<std::string, std::string, bool> openTagData[] =
 {
-    std::make_tuple("[b]", "b"),
-    std::make_tuple("[cat]", "cat"),
+    std::make_tuple("[b]", "b", true),
+    std::make_tuple("[cat]", "cat", true),
+    std::make_tuple("[cat ]", "", false),
 };
 
 // --run_test=bbspirit/openTagTest
-BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected)
+BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected, parsed)
 {
     std::string::const_iterator start = std::begin(original);
     const std::string::const_iterator stop = std::end(original);
@@ -53,7 +56,10 @@ BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected)
     bool result =
         phrase_parse(start, stop, bbspirit::openTag2, x3::ascii::space, openTag);
 
-    BOOST_REQUIRE(result);
+    BOOST_REQUIRE_EQUAL(result, parsed);
+
+    if (!parsed) return;
+    
     BOOST_REQUIRE(start == stop);
     BOOST_REQUIRE_EQUAL(openTag.id, expected);
 }
@@ -106,6 +112,7 @@ const std::tuple<std::string, std::uint32_t, std::string> contentData[] =
     std::make_tuple("[cat]", 0, "cat"),
     std::make_tuple("[/b]", 1, "b"),
     std::make_tuple("cat", 2, "cat"),
+    std::make_tuple(" cat ", 2, " cat "),
 };
 
 // --run_test=bbspirit/contentParserTest
@@ -126,18 +133,58 @@ BOOST_DATA_TEST_CASE(contentParserTest, data::make(contentData), original, which
     BOOST_REQUIRE_EQUAL(temp, innerString);
 }
 
-const std::tuple<std::string, std::uint32_t> elementsData[] =
+using InfoTuple = std::tuple<std::string, std::uint32_t>;
+using InfoVector = std::vector<InfoTuple>;
+const std::tuple<std::string, InfoVector> elementsData[] =
 {
-    std::make_tuple("[cat]", 1),
-    std::make_tuple("[/b]", 1),
-    std::make_tuple("cat", 1),
-    std::make_tuple("[b]hello world[/b]", 3),
-    std::make_tuple("foo [b]hello world[/b] bar", 5),
-    std::make_tuple("foo[ [b]hello wo[/rld[/b] bar", 5),
+    std::tuple<std::string, InfoVector>
+    { 
+        "[cat]", 
+        { { "cat", 0 } }
+    },
+    std::tuple<std::string, InfoVector>
+    {   
+        "[/b]", 
+        { { "b", 1 } }
+    },
+    std::tuple<std::string, InfoVector>{
+        "cat", 
+        { { "cat", 2 } }
+    },
+    std::tuple<std::string, InfoVector>{
+        "[b]hello world[/b]", 
+        { { "b", 0 }, { "hello world", 2 }, { "b", 1 } }
+    },
+    std::tuple<std::string, InfoVector>{
+        "foo [b]hello world[/b] bar", 
+        { { "foo ", 2 }, { "b", 0 }, { "hello world", 2 }, { "b", 1 }, { " bar", 2 } }
+    },
+    std::tuple<std::string, InfoVector>{
+        "foo[ [b]hello wo[/rld[/b] bar", 
+        { { "foo[] ", 2 }, { "b", 0 }, { "hello wo[/rld", 2 }, { "b", 1 }, { " bar", 2 } }
+    },
 };
 
+BOOST_AUTO_TEST_SUITE_END() // bbspirit
+
+namespace std
+{
+    std::ostream& operator<<(std::ostream& out, const bbspirit::InfoVector& indexPairs)
+    {
+        out << "{ ";
+        for (const auto& [tag, type] : indexPairs)
+        {
+            out << "{" << tag << "," << type << "}";
+        }
+        out << " }";
+        return out;
+    }
+}
+
+BOOST_AUTO_TEST_SUITE(bbspirit)
+
 // --run_test=bbspirit/elementsParserTest
-BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, elementCount)
+BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, infoVec)
 {
     std::string::const_iterator start = std::begin(original);
     const std::string::const_iterator stop = std::end(original);
@@ -149,7 +196,17 @@ BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, ele
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
-    BOOST_REQUIRE_EQUAL(elements.size(), elementCount);
+    BOOST_REQUIRE_EQUAL(elements.size(), infoVec.size());
+
+    for (const auto& datum : infoVec | boost::adaptors::indexed())
+    {
+        const auto& [extag, extype] = datum.value();
+        const auto& parsedVar = elements.at(datum.index());
+            
+        BOOST_REQUIRE_EQUAL(elements.at(datum.index()).get().which(), extype);
+        const auto temp = boost::apply_visitor(tag_visitor(), elements.at(datum.index()).get()); 
+        BOOST_REQUIRE_EQUAL(temp, extag);
+    }
 }
 
-BOOST_AUTO_TEST_SUITE_END() // arccutils
+BOOST_AUTO_TEST_SUITE_END() // bbspirit

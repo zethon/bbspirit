@@ -56,15 +56,15 @@ struct Element : x3::variant<OpenTag, CloseTag, std::string>
 
 auto closeTag2
     = x3::rule<struct closeTagID2, CloseTag, true> { "closeTag2" }
-    = ("[/" >> x3::lexeme[+x3::alnum] >> ']');
+    = ("[/" >> x3::lexeme[+x3::alnum - x3::space] >> ']'); 
 
 auto openTag2
     = x3::rule<struct openTagID2, OpenTag, true> { "openTag2" }
-    = ('[' >> x3::lexeme[+(x3::alnum)] >> ']');
+    = ('[' >> x3::lexeme[+(x3::alnum - (x3::char_(' ') | ']'))] >> ']'); 
 
 const auto contentParser
     = x3::rule<class ContentParserID, Element, true> { "contentParser" }
-    = closeTag2 | openTag2 | x3::lexeme[+(x3::char_ - (closeTag2 | openTag2))];
+    = closeTag2 | openTag2 | x3::lexeme[+((x3::space | x3::char_) - (closeTag2 | openTag2))];
 
 using Elements = std::vector<Element>;
 const auto elementsParser
