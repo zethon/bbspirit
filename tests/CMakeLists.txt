@@ -9,20 +9,20 @@ set(BBSPIRIT_FILES
 )
 
 set(MISC_FILES
-    test_misc.cpp
+    test_parse.cpp
 )
 
-add_executable(test_misc
+add_executable(test_parse
     main.cpp
     ${BBSPIRIT_FILES}
     ${MISC_FILES}
 )
 
-target_link_libraries(test_misc
+target_link_libraries(test_parse
     PUBLIC
         ${CONAN_LIBS}
 )
 
-add_test(NAME test_misc
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_misc
+add_test(NAME test_parse
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_parse
 )
