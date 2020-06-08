@@ -13,31 +13,6 @@ namespace data = boost::unit_test::data;
 
 BOOST_AUTO_TEST_SUITE(bbspirit)
 
-const std::tuple<std::string, std::string, std::string> simpleTagData[] =
-{
-    std::make_tuple("[i]Hello World[/i]", "i", "Hello World"),
-    std::make_tuple("[url]Hello World[/url]", "url", "Hello World"),
-    std::make_tuple("[url]Hello Wo[rld[/url]", "url", "Hello Wo[rld"),
-    std::make_tuple("[url]Hello Wo[/rld[/url]", "url", "Hello Wo[/rld"),
-};
-
-// --run_test=bbspirit/simpleTagTest
-BOOST_DATA_TEST_CASE(simpleTagTest, data::make(simpleTagData), original, tag, text)
-{
-    std::string::const_iterator start = std::begin(original);
-    const std::string::const_iterator stop = std::end(original);
-
-    bbspirit::SimpleElement element{};
-
-    bool result =
-        phrase_parse(start, stop, bbspirit::simpleTag, x3::ascii::space, element);
-
-    BOOST_REQUIRE(result);
-    BOOST_REQUIRE(start == stop);
-    BOOST_REQUIRE_EQUAL(element.tag, tag);
-    BOOST_REQUIRE_EQUAL(element.content, text);
-}
-
 const std::tuple<std::string, std::string, bool> openTagData[] =
 {
     std::make_tuple("[b]", "b", true),
@@ -54,7 +29,7 @@ BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected, p
     bbspirit::OpenTag openTag{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::openTag2, x3::ascii::space, openTag);
+        phrase_parse(start, stop, bbspirit::openTag, x3::ascii::space, openTag);
 
     BOOST_REQUIRE_EQUAL(result, parsed);
 
@@ -79,7 +54,7 @@ BOOST_DATA_TEST_CASE(closeTagTest, data::make(closeTagData), original, expected)
     bbspirit::CloseTag closeTag{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::closeTag2, x3::ascii::space, closeTag);
+        phrase_parse(start, stop, bbspirit::closeTag, x3::ascii::space, closeTag);
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
