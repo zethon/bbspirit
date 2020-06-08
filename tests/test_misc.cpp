@@ -112,6 +112,8 @@ const std::tuple<std::string, std::uint32_t, std::string> contentData[] =
     std::make_tuple("[cat]", 0, "cat"),
     std::make_tuple("[/b]", 1, "b"),
     std::make_tuple("cat", 2, "cat"),
+    std::make_tuple(" cat", 2, " cat"),
+    std::make_tuple("cat ", 2, "cat "),
     std::make_tuple(" cat ", 2, " cat "),
 };
 
@@ -161,7 +163,7 @@ const std::tuple<std::string, InfoVector> elementsData[] =
     },
     std::tuple<std::string, InfoVector>{
         "foo[ [b]hello wo[/rld[/b] bar", 
-        { { "foo[] ", 2 }, { "b", 0 }, { "hello wo[/rld", 2 }, { "b", 1 }, { " bar", 2 } }
+        { { "foo[ ", 2 }, { "b", 0 }, { "hello wo[/rld", 2 }, { "b", 1 }, { " bar", 2 } }
     },
 };
 
