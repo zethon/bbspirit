@@ -21,6 +21,16 @@ struct CloseTag
 
 } // namespace bbspirit
 
+bbspirit::OpenTag operator"" _openTag(const char* str, std::size_t)
+{
+    return bbspirit::OpenTag { str };
+}
+
+bbspirit::CloseTag operator"" _closeTag(const char* str, std::size_t)
+{
+    return bbspirit::CloseTag { str };
+}
+
 BOOST_FUSION_ADAPT_STRUCT
 (
     bbspirit::OpenTag, id
@@ -59,5 +69,21 @@ using Elements = std::vector<Element>;
 const auto elementsParser
     = x3::rule<class ContentParserID, Elements, true> { "elementsParser" }
     = contentParser >> *(contentParser);
+
+class TextFormatter
+{
+    std::uint8_t    _quoteLevel = 1;
+
+public:
+
+    void setQuoteLevel(std::uint8_t level) { _quoteLevel = level; }
+    std::uint8_t quoteLevel() const { return _quoteLevel; }
+
+    void format(const Elements& elements, std::ostream& out)
+    {
+
+    }
+
+};
 
 } // namespace bbspirit
