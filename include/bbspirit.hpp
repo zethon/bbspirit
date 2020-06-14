@@ -70,20 +70,4 @@ const auto elementsParser
     = x3::rule<class ContentParserID, Elements, true> { "elementsParser" }
     = contentParser >> *(contentParser);
 
-class TextFormatter
-{
-    std::uint8_t    _quoteLevel = 1;
-
-public:
-
-    void setQuoteLevel(std::uint8_t level) { _quoteLevel = level; }
-    std::uint8_t quoteLevel() const { return _quoteLevel; }
-
-    void format(const Elements& elements, std::ostream& out)
-    {
-
-    }
-
-};
-
 } // namespace bbspirit

@@ -6,6 +6,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 set(BBSPIRIT_FILES
     ../include/BBDocument.h
     ../include/bbspirit.hpp
+    ../include/TextFormatter.hpp
 )
 
 add_executable(test_parse
