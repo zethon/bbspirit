@@ -84,8 +84,18 @@ struct tag_visitor
         return value.id;
     }
 
-    std::string operator()(const bbspirit::Whitespace&) const
+    std::string operator()(const bbspirit::Whitespace& ws) const
     {
+        switch (ws)
+        {
+            case Whitespace::NEWLINE:
+                return "\n"s;
+            case Whitespace::TAB:
+                return "\t"s;
+            default:
+            break;
+        }
+
         return std::string{};
     }
 };
@@ -134,11 +144,13 @@ const std::tuple<std::string, InfoVector> elementsData[] =
         "[/b]", 
         { { "b", CLOSETAG } }
     },
-    std::tuple<std::string, InfoVector>{
+    std::tuple<std::string, InfoVector>
+    {
         "cat", 
         { { "cat", STRING } }
     },
-    std::tuple<std::string, InfoVector>{
+    std::tuple<std::string, InfoVector>
+    {
         "[b]hello world[/b]", 
         { { "b", OPENTAG }, { "hello world", STRING }, { "b", CLOSETAG } }
     },
@@ -146,9 +158,46 @@ const std::tuple<std::string, InfoVector> elementsData[] =
         "foo [b]hello world[/b] bar", 
         { { "foo ", STRING }, { "b", OPENTAG }, { "hello world", STRING }, { "b", CLOSETAG }, { " bar", STRING } }
     },
-    std::tuple<std::string, InfoVector>{
+    std::tuple<std::string, InfoVector>
+    {
         "foo[ [b]hello wo[/rld[/b] bar", 
         { { "foo[ ", STRING }, { "b", OPENTAG }, { "hello wo[/rld", STRING }, { "b", CLOSETAG }, { " bar", STRING } }
+    },
+    std::tuple<std::string, InfoVector>
+    {
+        " dogs \t cats ",
+        { 
+            {" dogs ", STRING},
+            {"\t", WHITESPACE},
+            {" cats ", STRING},
+        }
+    },
+    std::tuple<std::string, InfoVector>
+    {
+        "Here is a list:\n\tdogs\n\tcats ",
+        {
+            {"Here is a list:", STRING},
+            {"\n", WHITESPACE},
+            {"\t", WHITESPACE},
+            {"dogs", STRING},
+            {"\n", WHITESPACE},
+            {"\t", WHITESPACE},
+            {"cats ", STRING},
+        }
+    },
+    std::tuple<std::string, InfoVector>
+    {
+        "[b]Here is a list:[/b]\n[li]dogs[li]cats ",
+        {
+            {"b", OPENTAG},
+            {"Here is a list:", STRING},
+            {"b", CLOSETAG },
+            {"\n", WHITESPACE},
+            {"li", OPENTAG},
+            {"dogs", STRING},
+            {"li", OPENTAG},
+            {"cats ", STRING},
+        }
     },
 };
 
@@ -182,6 +231,8 @@ BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, inf
         phrase_parse(start, stop, bbspirit::elementsParser, x3::ascii::space, elements);
 
     BOOST_REQUIRE(result);
+
+    auto x = std::string{ start, stop };
     BOOST_REQUIRE(start == stop);
     BOOST_REQUIRE_EQUAL(elements.size(), infoVec.size());
 
