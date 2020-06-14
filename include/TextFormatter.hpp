@@ -10,7 +10,10 @@ namespace bbspirit
 class TextFormatter
 {
 
-std::int8_t     _quoteLevel = 0;
+std::uint16_t   _maxQuoteLevel = 1;
+std::uint16_t   _maxWidth = 80;
+
+std::int16_t     _quoteLevel = 0;
 std::string     _quoter = "> ";
 
 struct text_printer
@@ -49,12 +52,17 @@ struct text_printer
             indent_--;
         }
     }
+
+    void operator()(const Whitespace& ws)
+    {
+
+    }
 };
 
 public:
 
 void setQuoteLevel(std::uint8_t level) { _quoteLevel = level; }
-std::uint8_t quoteLevel() const { return _quoteLevel; }
+//std::uint8_t quoteLevel() const { return _quoteLevel; }
 
 void format(const Elements& elements, std::ostream& out)
 {

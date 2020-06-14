@@ -9,6 +9,23 @@ namespace x3 = boost::spirit::x3;
 namespace bbspirit
 {
 
+enum Whitespace
+{
+    NEWLINE,
+    TAB
+};
+
+struct whitespace_p : x3::symbols<Whitespace>
+{
+    whitespace_p()
+    {
+        add
+        ("\n", Whitespace::NEWLINE)
+        ("\t", Whitespace::TAB)
+        ;
+    }
+} whitespace;
+
 struct OpenTag
 {
     std::string id;
@@ -47,7 +64,7 @@ namespace bbspirit
 namespace x3 = boost::spirit::x3;
 namespace ascii = boost::spirit::x3::ascii;
 
-struct Element : x3::variant<OpenTag, CloseTag, std::string>
+struct Element : x3::variant<OpenTag, CloseTag, Whitespace, std::string>
 {
     using base_type::base_type;
     using base_type::operator=;
@@ -63,7 +80,11 @@ auto openTag
 
 const auto contentParser
     = x3::rule<class ContentParserID, Element, true> { "contentParser" }
-    = closeTag | openTag |  x3::no_skip[+(x3::char_ - (closeTag | openTag))];
+    = closeTag 
+        | openTag 
+        | x3::no_skip[+(x3::char_ - (closeTag | openTag | whitespace))]
+        | whitespace
+    ;
 
 using Elements = std::vector<Element>;
 const auto elementsParser

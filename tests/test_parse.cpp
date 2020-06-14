@@ -13,6 +13,11 @@ namespace data = boost::unit_test::data;
 
 BOOST_AUTO_TEST_SUITE(bbspirit)
 
+constexpr std::uint8_t OPENTAG = 0;
+constexpr std::uint8_t CLOSETAG = 1;
+constexpr std::uint8_t WHITESPACE = 2;
+constexpr std::uint8_t STRING = 3;
+
 const std::tuple<std::string, std::string, bool> openTagData[] =
 {
     std::make_tuple("[b]", "b", true),
@@ -78,18 +83,23 @@ struct tag_visitor
     {
         return value.id;
     }
+
+    std::string operator()(const bbspirit::Whitespace&) const
+    {
+        return std::string{};
+    }
 };
 
 // 0 - tag
 // 1 - which type (0 - OpenTag, 1 - CloseTag, 2 - string)
 const std::tuple<std::string, std::uint32_t, std::string> contentData[] =
 {
-    std::make_tuple("[cat]", 0, "cat"),
-    std::make_tuple("[/b]", 1, "b"),
-    std::make_tuple("cat", 2, "cat"),
-    std::make_tuple(" cat", 2, " cat"),
-    std::make_tuple("cat ", 2, "cat "),
-    std::make_tuple(" cat ", 2, " cat "),
+    std::make_tuple("[cat]", OPENTAG, "cat"),
+    std::make_tuple("[/b]", CLOSETAG, "b"),
+    std::make_tuple("cat", STRING, "cat"),
+    std::make_tuple(" cat", STRING, " cat"),
+    std::make_tuple("cat ", STRING, "cat "),
+    std::make_tuple(" cat ", STRING, " cat "),
 };
 
 // --run_test=bbspirit/contentParserTest
@@ -117,28 +127,28 @@ const std::tuple<std::string, InfoVector> elementsData[] =
     std::tuple<std::string, InfoVector>
     { 
         "[cat]", 
-        { { "cat", 0 } }
+        { { "cat", OPENTAG } }
     },
     std::tuple<std::string, InfoVector>
     {   
         "[/b]", 
-        { { "b", 1 } }
+        { { "b", CLOSETAG } }
     },
     std::tuple<std::string, InfoVector>{
         "cat", 
-        { { "cat", 2 } }
+        { { "cat", STRING } }
     },
     std::tuple<std::string, InfoVector>{
         "[b]hello world[/b]", 
-        { { "b", 0 }, { "hello world", 2 }, { "b", 1 } }
+        { { "b", OPENTAG }, { "hello world", STRING }, { "b", CLOSETAG } }
     },
     std::tuple<std::string, InfoVector>{
         "foo [b]hello world[/b] bar", 
-        { { "foo ", 2 }, { "b", 0 }, { "hello world", 2 }, { "b", 1 }, { " bar", 2 } }
+        { { "foo ", STRING }, { "b", OPENTAG }, { "hello world", STRING }, { "b", CLOSETAG }, { " bar", STRING } }
     },
     std::tuple<std::string, InfoVector>{
         "foo[ [b]hello wo[/rld[/b] bar", 
-        { { "foo[ ", 2 }, { "b", 0 }, { "hello wo[/rld", 2 }, { "b", 1 }, { " bar", 2 } }
+        { { "foo[ ", STRING }, { "b", OPENTAG }, { "hello wo[/rld", STRING }, { "b", CLOSETAG }, { " bar", STRING } }
     },
 };
 
