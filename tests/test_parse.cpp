@@ -44,6 +44,27 @@ BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected, p
     BOOST_REQUIRE_EQUAL(openTag.id, expected);
 }
 
+const std::tuple<std::string> openTagFailData[] =
+{
+    "[b ]",
+    "[cat%$&]",
+    "[ cat]",
+};
+
+// --run_test=bbspirit/openTagFailTest
+BOOST_DATA_TEST_CASE(openTagFailTest, data::make(openTagFailData), original)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::OpenTag openTag{};
+
+    bool result =
+        parse(start, stop, bbspirit::openTag, openTag);
+
+    BOOST_TEST(!result);
+}
+
 const std::tuple<std::string, std::string> closeTagData[] =
 {
     std::make_tuple("[/b]", "b"),
@@ -64,6 +85,27 @@ BOOST_DATA_TEST_CASE(closeTagTest, data::make(closeTagData), original, expected)
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
     BOOST_REQUIRE_EQUAL(closeTag.id, expected);
+}
+
+const std::tuple<std::string> closeTagFailData[] =
+{
+    "[/b ]",
+    "[/cat%$&]",
+    "[/ cat]",
+};
+
+// --run_test=bbspirit/closeTagFailTest
+BOOST_DATA_TEST_CASE(closeTagFailTest, data::make(closeTagFailData), original)
+{
+    std::string::const_iterator start = std::begin(original);
+    const std::string::const_iterator stop = std::end(original);
+
+    bbspirit::OpenTag openTag{};
+
+    bool result =
+        parse(start, stop, bbspirit::openTag, openTag);
+
+    BOOST_TEST(!result);
 }
 
 struct tag_visitor

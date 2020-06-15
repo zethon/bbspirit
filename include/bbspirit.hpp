@@ -72,22 +72,22 @@ struct Element : x3::variant<OpenTag, CloseTag, Whitespace, std::string>
 
 auto closeTag
     = x3::rule<struct closeTagID2, CloseTag, true> { "closeTag" }
-    = x3::no_skip["[/" >> +x3::alnum >> ']'];
+    = "[/" >> +x3::alnum >> ']';
 
 auto openTag
     = x3::rule<struct openTagID2, OpenTag, true> { "openTag" }
-    = x3::no_skip['[' >> +x3::alnum >> ']'];
+    = '[' >> +x3::alnum >> ']';
 
 auto rawText
     = x3::rule<struct rawTextID, std::string, true> { "rawText" }
-    = x3::no_skip[+(x3::char_ - (closeTag | openTag | whitespace))];
+    = +(x3::char_ - (closeTag | openTag | whitespace));
 
 const auto contentParser
     = x3::rule<class ContentParserID, Element, true> { "contentParser" }
     = closeTag 
         | openTag 
         | rawText
-        | x3::no_skip[whitespace]
+        | whitespace
     ;
 
 using Elements = std::vector<Element>;
