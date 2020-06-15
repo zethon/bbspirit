@@ -34,7 +34,7 @@ BOOST_DATA_TEST_CASE(openTagTest, data::make(openTagData), original, expected, p
     bbspirit::OpenTag openTag{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::openTag, x3::ascii::space, openTag);
+        parse(start, stop, bbspirit::openTag, openTag);
 
     BOOST_REQUIRE_EQUAL(result, parsed);
 
@@ -59,7 +59,7 @@ BOOST_DATA_TEST_CASE(closeTagTest, data::make(closeTagData), original, expected)
     bbspirit::CloseTag closeTag{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::closeTag, x3::ascii::space, closeTag);
+        parse(start, stop, bbspirit::closeTag, closeTag);
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
@@ -121,7 +121,7 @@ BOOST_DATA_TEST_CASE(contentParserTest, data::make(contentData), original, which
     bbspirit::Element element{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::contentParser, x3::ascii::space, element);
+        parse(start, stop, bbspirit::contentParser, element);
 
     BOOST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
@@ -228,7 +228,7 @@ BOOST_DATA_TEST_CASE(elementsParserTest, data::make(elementsData), original, inf
     bbspirit::Elements elements{};
 
     bool result =
-        phrase_parse(start, stop, bbspirit::elementsParser, x3::ascii::space, elements);
+        parse(start, stop, bbspirit::elementsParser, elements);
 
     BOOST_REQUIRE(result);
 

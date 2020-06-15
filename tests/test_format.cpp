@@ -42,6 +42,7 @@ BOOST_DATA_TEST_CASE(textFormatterTest, data::make(textTestData), original, expe
 
     std::stringstream ss;
     formatter.format(elements, ss);
+    BOOST_TEST_MESSAGE(ss.str());
     BOOST_TEST(ss.str() == expected);
 }
 
