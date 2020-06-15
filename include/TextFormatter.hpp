@@ -7,8 +7,63 @@
 namespace bbspirit
 {
 
-    struct text_printer;
+struct text_printer;
 
+std::size_t find_seperator_space(std::string_view original)
+{
+    std::size_t retval = std::string_view::npos; 
+    bool done = false;
+
+    std::size_t x = original.size();
+
+    while (x > 0)
+    {
+        x--;
+
+        if (original.at(x) != ' ')
+        {
+            if (x < (original.size() - 1))
+            {
+                if (original.at(x + 1) == ' ')
+                {
+                    return x + 1;
+                }
+            }
+        }
+    }
+
+    if (original.at(x) == ' ') return 0;
+    
+    return std::string_view::npos;
+}
+
+std::vector<std::string_view> splitText(std::string_view original, std::uint16_t maxWidth)
+{
+    std::vector<std::string_view> retval;
+
+    if (original.size() > maxWidth)
+    {
+        std::string_view worker{ original };
+
+        //do
+        //{ 
+        //    std::string_view temp{ original.data(), maxWidth };
+
+        //    auto x = temp.size() - 1;
+        //    while (temp.at(x) !=)
+
+        //} 
+        //while (worker.size() > 0);
+        
+        
+    }
+    else
+    {
+        retval.push_back(original);
+    }
+
+    return retval;
+}
 
 class TextFormatter
 {
@@ -69,6 +124,7 @@ struct text_printer
         if (boost::iequals(tag.id, "QUOTE"))
         {
             indent_--;
+            out_ << tf_._newline;
         }
     }
 
