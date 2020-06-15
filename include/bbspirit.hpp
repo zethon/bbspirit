@@ -80,14 +80,14 @@ auto openTag
 
 auto rawText
     = x3::rule<struct rawTextID, std::string, true> { "rawText" }
-    = +(x3::char_ - (closeTag | openTag | whitespace));
+    = x3::no_skip[+(x3::char_ - (closeTag | openTag | whitespace))];
 
 const auto contentParser
     = x3::rule<class ContentParserID, Element, true> { "contentParser" }
     = closeTag 
         | openTag 
         | rawText
-        | whitespace
+        | x3::no_skip[whitespace]
     ;
 
 using Elements = std::vector<Element>;
