@@ -21,15 +21,8 @@ std::uint16_t   _maxWidth = 80;
 std::string     _quoteStr = "> ";
 std::string     _newline = "\n";
 
-std::int16_t     _quoteLevel = 0;
-std::string     _quoter = "> ";
 
 public:
-
-
-
-void setQuoteLevel(std::uint8_t level) { _quoteLevel = level; }
-//std::uint8_t quoteLevel() const { return _quoteLevel; }
 
 void format(const Elements& elements, std::ostream& out)
 {
@@ -39,7 +32,7 @@ void format(const Elements& elements, std::ostream& out)
     {
         boost::apply_visitor(visitor, element);
     }
-}
+};
 
 struct text_printer
 {
@@ -57,7 +50,7 @@ struct text_printer
     {
         for (auto i = 0u; i < indent_; i++)
         {
-            out_ << tf_._quoter;
+            out_ << tf_._quoteStr;
         }
 
         out_ << text;
