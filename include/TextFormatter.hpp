@@ -45,17 +45,29 @@ std::vector<std::string_view> splitText(std::string_view original, std::uint16_t
     {
         std::string_view worker{ original };
 
-        //do
-        //{ 
-        //    std::string_view temp{ original.data(), maxWidth };
-
-        //    auto x = temp.size() - 1;
-        //    while (temp.at(x) !=)
-
-        //} 
-        //while (worker.size() > 0);
-        
-        
+        while (worker.size() > 0)
+        {
+            if (worker.size() <= maxWidth)
+            {
+                retval.push_back(worker);
+                worker.remove_prefix(worker.size());
+            }
+            else
+            {
+                std::string_view temp{ worker.data(), maxWidth };
+                if (const auto pos = find_seperator_space(temp);
+                    pos != std::string_view::npos)
+                {
+                    retval.emplace_back(worker.data(), pos);
+                    worker.remove_prefix(pos);
+                }
+                else
+                {
+                    retval.push_back(temp);
+                    worker.remove_prefix(temp.size());
+                }
+            }
+        }
     }
     else
     {

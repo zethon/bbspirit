@@ -30,8 +30,8 @@ inline std::ostream&
     return out << ']';
 }
 
-std::ostream& 
-operator<<(std::ostream& out, const std::tuple<std::string, std::uint16_t>& info)
+inline std::ostream& 
+    operator<<(std::ostream& out, const std::tuple<std::string, std::uint16_t>& info)
 {
     const auto&[text, width] = info;
     out << text << ',' << width;
@@ -76,6 +76,14 @@ const std::tuple<TestInfo, std::vector<std::string>> textSplitterTestData[] =
     {
         { "0123456789"s, 5 },
         { { "01234"s}, {"56789"s} }
+    },
+    {
+        { "0123456789abc"s, 5 },
+        { { "01234"s}, {"56789"s}, {"abc"s} }
+    },
+    {
+        { "01 23  45678 9abc"s, 5 },
+        { { "0123"s}, {" "s}, {"45678"s} }
     },
 };
 
