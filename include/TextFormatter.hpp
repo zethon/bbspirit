@@ -59,7 +59,7 @@ std::vector<std::string_view> splitText(std::string_view original, std::uint16_t
                     pos != std::string_view::npos)
                 {
                     retval.emplace_back(worker.data(), pos);
-                    worker.remove_prefix(pos);
+                    worker.remove_prefix(pos <= 0 ? 1 : pos);
                 }
                 else
                 {

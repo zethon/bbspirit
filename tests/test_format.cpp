@@ -53,6 +53,7 @@ const std::tuple<std::string, std::size_t> findSeperatorSpaceTestData[] =
     { "    ", 0 },
     { "    x", 0 },
     { "x    x", 1 },
+    { "ab cd ", 5}
 };
 
 // --run_test=bbformat/findSeperatorSpaceTest
@@ -82,8 +83,8 @@ const std::tuple<TestInfo, std::vector<std::string>> textSplitterTestData[] =
         { { "01234"s}, {"56789"s}, {"abc"s} }
     },
     {
-        { "01 23  45678 9abc"s, 5 },
-        { { "0123"s}, {" "s}, {"45678"s} }
+        { "ab cd  efghi jklm"s, 5 },
+        { { "ab cd"s}, {" efghi"s}, {"jklm8"s} }
     },
 };
 
@@ -94,7 +95,7 @@ BOOST_DATA_TEST_CASE(textSplitterTest, data::make(textSplitterTestData), data, e
 
     auto results = bbspirit::splitText(original, maxwidth);
     
-    BOOST_TEST_REQUIRE(results.size() == expected.size());
+    BOOST_TEST(results.size() == expected.size());
 
     for (const auto& expected_item : expected | boost::adaptors::indexed())
     {
